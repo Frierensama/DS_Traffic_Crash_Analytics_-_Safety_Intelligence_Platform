@@ -2,6 +2,8 @@ import pandas as pd
 
 df = pd.read_csv("C:/Users/rudeu/Documents/Github_Repos/DS_Traffic_Crash_Analytics_&_Safety_Intelligence_Platform/data/Traffic_CrashesData.csv")
 
+print(f"\n\nShape : {df.shape}")
+
 print("\n\nNull checks : ")
 print(df.isnull().sum())
 
@@ -11,3 +13,6 @@ print(columns)
 
 print("\n\nData Types : ")
 print(df.dtypes)
+
+print("\n\nSample data : ")
+print(df.head())
