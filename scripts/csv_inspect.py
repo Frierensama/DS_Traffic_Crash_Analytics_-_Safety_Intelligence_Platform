@@ -15,4 +15,4 @@ print("\n\nData Types : ")
 print(df.dtypes)
 
 print("\n\nSample data : ")
-print(df.head())
+print(df.head())   #cant see all columns.

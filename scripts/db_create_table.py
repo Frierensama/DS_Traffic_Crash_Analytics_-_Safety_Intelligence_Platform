@@ -57,8 +57,8 @@ create table traffic_crashes (
     CRASH_MONTH int,
 
     #location details
-    LATITUDE decimal(10,6),
-    LONGITUDE decimal(10,6),
+    LATITUDE float,
+    LONGITUDE float,
     LOCATION varchar(40)
 )
 """
