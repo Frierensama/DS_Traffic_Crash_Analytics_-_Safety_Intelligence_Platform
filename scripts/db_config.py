@@ -1,9 +1,10 @@
 import pymysql
 
+# database connection method.
 def get_connection():
     return pymysql.connect(
         host = "localhost",
         user = "root",
         password = "admin",
-        database = "traffic_crash_analysis" #database name in my system.
+        database = "traffic_crash_analysis" # database name in my system.
     )
