@@ -1,5 +1,6 @@
 import pandas as pd
 from db_config import get_connection
+
 try:
     # load the csv.
     df = pd.read_csv("C:/Users/rudeu/Documents/Github_Repos/DS_Traffic_Crash_Analytics_&_Safety_Intelligence_Platform/data/Traffic_CrashesData.csv")
@@ -28,7 +29,7 @@ try:
 
 except Exception as e:
     # in-case if an error occures while loading or connecting or inserting.
-    print("Error :",e)
+    print("Error : ",e)
 
 finally:
     # close cursor and connection.

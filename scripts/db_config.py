@@ -1,6 +1,6 @@
 import pymysql
 
-# database connection method.
+# database connection function.
 def get_connection():
     return pymysql.connect(
         host = "localhost",
