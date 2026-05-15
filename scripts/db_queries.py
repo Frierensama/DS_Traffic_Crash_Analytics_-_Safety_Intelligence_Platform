@@ -1,6 +1,6 @@
 queries = {
     "1. Top 5 Dangerous Weather + Crash Type": """
-    
+
     select 
     WEATHER_CONDITION , CRASH_TYPE , count(*) as total_crashes
     from traffic_crashes
@@ -234,4 +234,52 @@ queries = {
     limit 10;
 
     """
+}
+
+
+insights = {
+    "1. Top 5 Dangerous Weather + Crash Type":
+        "This shows which weather and crash-type combinations occur most often. In this dataset, frequent crashes in clear weather may simply reflect that most driving happens under normal conditions.",
+
+    "2. Top 10 Streets with Highest Injury Crashes":
+        "These streets report the highest number of injury crashes, making them important locations for closer traffic safety review.",
+
+    "3. Injury Percentage by Crash Type":
+        "Some crash types lead to injuries much more often than others, showing which collision types tend to be more severe.",
+
+    "4. Peak Crash Hour for Each Month":
+        "Crash activity is not evenly spread throughout the day. This highlights the busiest crash hour for each month.",
+
+    "5. Top 5 Night-Time Primary Crash Causes":
+        "These are the most common causes behind crashes during night hours, helping identify recurring late-hour risk patterns.",
+
+    "6. Average Injuries: Daylight vs Darkness":
+        "This comparison shows whether crashes in darker conditions tend to result in more injuries than those in daylight.",
+
+    "7. Traffic Control Device with Highest Average Injuries":
+        "This identifies which traffic control setup is associated with the highest average injuries per crash.",
+
+    "8. Top 5 Crash Hotspots by Exact Coordinates":
+        "These exact coordinates represent the locations with the highest number of recorded crashes.",
+
+    "9. Top 5 Streets with Highest Injury Rate (>100 crashes)":
+        "Unlike total crash counts, this highlights streets where crashes are more likely to result in injuries.",
+
+    "10. Most Common Crash Type Per Year":
+        "This shows how the most frequent crash type changes from year to year, revealing shifts in crash patterns over time.",
+
+    "11. Day with Highest Average Crashes Per Hour":
+        "This identifies the weekday with the heaviest crash activity on an hourly average basis.",
+
+    "12. High-Risk Time Slots (Morning/Afternoon/Evening/Night)":
+        "This shows which part of the day sees the highest number of injury crashes.",
+
+    "13. Top 3 Contributing Causes per Crash Type":
+        "Different crash types show different leading causes, which helps explain why certain crashes happen more often.",
+
+    "14. Year-over-Year Crash Growth Rate":
+        "This shows whether total crashes increased or decreased compared to previous years.",
+
+    "15. Hotspot Zones (Rounded Coordinates)":
+        "Nearby crash points are grouped into zones here, making broader accident clusters easier to identify."
 }
