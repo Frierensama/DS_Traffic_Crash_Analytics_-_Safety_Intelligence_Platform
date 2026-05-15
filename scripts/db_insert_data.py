@@ -3,7 +3,7 @@ from db_config import get_connection
 
 try:
     # load the csv.
-    df = pd.read_csv("C:/Users/rudeu/Documents/Github_Repos/DS_Traffic_Crash_Analytics_&_Safety_Intelligence_Platform/data/Traffic_CrashesData.csv")
+    df = pd.read_csv("C:/Users/peace/Documents/Github_Repos/DS_Traffic_Crash_Analytics_&_Safety_Intelligence_Platform/data/Traffic_CrashesData.csv")
 
     # removed duplicate/derived cols.
     df.drop(columns=['date','year'], inplace=True)
