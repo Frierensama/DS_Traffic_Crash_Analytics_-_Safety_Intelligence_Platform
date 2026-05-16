@@ -5,11 +5,11 @@ try:
     cursor = conn.cursor()
 
     # to prevent error if table exists. drops table before creating again.
-    cursor.execute(""" drop table if exists traffic_crashes """) 
+    cursor.execute(""" drop table if exists traffic_crashes_nfs """) 
 
     # table creation query.
     table_create_query = """ 
-    create table traffic_crashes (
+    create table traffic_crashes_nfs (
 
         #crash details
         CRASH_RECORD_ID char(128) primary key,
