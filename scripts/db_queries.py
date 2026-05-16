@@ -213,47 +213,47 @@ queries = {
 
 insights = {
     "1. Top 5 Dangerous Weather + Crash Type":
-        "This shows which weather and crash-type combinations occur most often. In this dataset, frequent crashes in clear weather may simply reflect that most driving happens under normal conditions.",
+        "Most of the crashes occured during normal weather conditons ie. clear weather.",
 
     "2. Top 10 Streets with Highest Injury Crashes":
-        "These streets report the highest number of injury crashes, making them important locations for closer traffic safety review.",
+        "These streets report the highest number of injury crashes, which requires closer traffic safety measures.",
 
     "3. Injury Percentage by Crash Type":
-        "Some crash types lead to injuries much more often than others, showing which collision types tend to be more severe.",
+        "Some crash types lead to injuries much more often than others, showing which collision types tends to more injuries.",
 
     "4. Peak Crash Hour for Each Month":
-        "Crash activity is not evenly spread throughout the day. This highlights the busiest crash hour for each month.",
+        "Crash activity is not evenly spread throughout the day. This highlights the peak crash hour for each month.",
 
     "5. Top 5 Night-Time Primary Crash Causes":
-        "These are the most common causes behind crashes during night hours, helping identify recurring late-hour risk patterns.",
+        "Most common causes behind crashes during night hours, helps us to premptive measures.",
 
     "6. Average Injuries: Daylight vs Darkness":
-        "This comparison shows whether crashes in darker conditions tend to result in more injuries than those in daylight.",
+        "We can say that injury during crash is more during night than during daytime.",
 
     "7. Traffic Control Device with Highest Average Injuries":
         "This identifies which traffic control setup is associated with the highest average injuries per crash.",
 
     "8. Top 5 Crash Hotspots by Exact Coordinates":
-        "These exact coordinates represent the locations with the highest number of recorded crashes.",
+        "These exact coordinates with the highest number of recorded crashes.",
 
     "9. Top 5 Streets with Highest Injury Rate (>100 crashes)":
-        "Unlike total crash counts, this highlights streets where crashes are more likely to result in injuries.",
+        "We know which street has highest injury rate where crashes are more than 100.",
 
     "10. Most Common Crash Type Per Year":
-        "This shows how the most frequent crash type changes from year to year, revealing shifts in crash patterns over time.",
+        "This shows how the most frequent crash type changes from year to year, no injury / drive away is most frequent crash type during each year.",
 
     "11. Day with Highest Average Crashes Per Hour":
-        "This identifies the weekday with the heaviest crash activity on an hourly average basis.",
+        "This identifies the weekday 6 with the heaviest crash activity on an hourly average basis.",
 
     "12. High-Risk Time Slots (Morning/Afternoon/Evening/Night)":
-        "This shows which part of the day sees the highest number of injury crashes.",
+        "During Afternoon, most crashes take place in a day.",
 
     "13. Top 3 Contributing Causes per Crash Type":
-        "Different crash types show different leading causes, which helps explain why certain crashes happen more often.",
+        "For each crash type, primary cause of crash is unknown which has majority of the crashes.",
 
     "14. Year-over-Year Crash Growth Rate":
-        "This shows whether total crashes increased or decreased compared to previous years.",
+        "Tells the growth rate of crashes per year if it increased or decreased.",
 
     "15. Hotspot Zones (Rounded Coordinates)":
-        "Nearby crash points are grouped into zones here, making broader accident clusters easier to identify."
+        "By spliting the crashes according to zones, its easier to identify which zone requires more attention."
 }
