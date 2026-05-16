@@ -1,10 +1,10 @@
 queries = {
     "1. Top 5 Dangerous Weather + Crash Type": """
 
-    select 
-    WEATHER_CONDITION , CRASH_TYPE , count(*) as total_crashes
-    from traffic_crashes
-    group by WEATHER_CONDITION , CRASH_TYPE
+    select weather_condition, crash_type, count(*) as total_crashes
+    from traffic_crashes_nfs
+    where weather_condition != 'UNKNOWN'
+    group by weather_condition, crash_type
     order by total_crashes desc
     limit 5;
 
@@ -12,52 +12,51 @@ queries = {
 
     "2. Top 10 Streets with Highest Injury Crashes": """
 
-    select
-    STREET_NAME , count(*) as injury_crash_count
-    from traffic_crashes
-    where INJURIES_TOTAL > 0
-    group by STREET_NAME
-    order by injury_crash_count desc
+    select street_name, count(*) as injury_crashes
+    from traffic_crashes_nfs
+    where injuries_total > 0
+    group by street_name
+    order by injury_crashes desc
     limit 10;
 
     """,
 
     "3. Injury Percentage by Crash Type": """
 
+    with cte as(
+    select crash_type, 
+    count(case when injuries_total > 0 then 1 end ) as injury_crashes, 
+    count(*) as total_crashes
+    from traffic_crashes_nfs
+    group by crash_type
+    )
     select
-    CRASH_TYPE, round( count(case when INJURIES_TOTAL > 0 then 1 end ) * 100 / count(*), 2 ) as percent_injury_for_type
-    from traffic_crashes
-    group by CRASH_TYPE
-    order by percent_injury_for_type desc;
+    crash_type,
+    round( injury_crashes * 100 / total_crashes, 2) as injury_crash_percent
+    from cte
+    order by injury_crash_percent desc;
 
     """,
 
     "4. Peak Crash Hour for Each Month": """
 
-    with crashes_by_hour as(
-    select CRASH_MONTH, CRASH_HOUR, count(*) as total_crashes
-    from traffic_crashes
-    group by CRASH_MONTH, CRASH_HOUR
+    with cte as (
+    select crash_month, crash_hour, count(*) as total_crashes_per_hour, row_number() over (partition by crash_month order by count(*) desc ) as rnk
+    from traffic_crashes_nfs
+    group by crash_month, crash_hour
+    order by crash_month, rnk
     )
-    ,
-    hours_ranked as (
-    select CRASH_MONTH, CRASH_HOUR, total_crashes, row_number() over ( partition by CRASH_MONTH order by total_crashes desc ) as rnk
-    from crashes_by_hour
-    )
-    select CRASH_MONTH, CRASH_HOUR as peak_crash_hour, total_crashes
-    from hours_ranked
-    where rnk = 1
-    order by CRASH_MONTH; 
+    select crash_month, crash_hour as peak_crash_hour, total_crashes_per_hour as total_crashes from cte
+    where rnk = 1;
 
     """,
 
     "5. Top 5 Night-Time Primary Crash Causes": """
 
-    select
-    PRIM_CONTRIBUTORY_CAUSE, count(*) as total_crashes
-    from traffic_crashes
-    where CRASH_HOUR >= 18
-    group by PRIM_CONTRIBUTORY_CAUSE
+    select prim_contributory_cause, count(*) as total_crashes
+    from traffic_crashes_nfs
+    where crash_hour >= 18
+    group by prim_contributory_cause
     order by total_crashes desc
     limit 5;
 
@@ -65,28 +64,24 @@ queries = {
 
     "6. Average Injuries: Daylight vs Darkness": """
 
-    select 
-    case 
-    when LIGHTING_CONDITION = 'DAYLIGHT' then 'Daylight'
-    else 'Darkness'
-    end as Lighting_group,
-    round(avg(INJURIES_TOTAL) , 2 ) as average_injuries
-    from traffic_crashes
-    where LIGHTING_CONDITION != 'UNKNOWN'
-    group by lighting_group;
+    select
+    case when lighting_condition = 'DAYLIGHT' then 'Daylight' else 'Darkness' end as light_condition,
+    round ( avg(injuries_total), 2 ) as average_injuries
+    from traffic_crashes_nfs
+    where lighting_condition != 'UNKNOWN'
+    group by light_condition;
 
     """,
 
-        "7. Traffic Control Device with Highest Average Injuries": """
+    "7. Traffic Control Device with Highest Average Injuries": """
 
     with cte as (
-    select TRAFFIC_CONTROL_DEVICE, round ( avg( INJURIES_TOTAL ), 2 ) as average_injuries
-    from traffic_crashes
-    where TRAFFIC_CONTROL_DEVICE != 'UNKNOWN'
-    group by TRAFFIC_CONTROL_DEVICE
+    select traffic_control_device, round( avg(injuries_total), 2 ) as average_injuries
+    from traffic_crashes_nfs
+    group by traffic_control_device
     order by average_injuries desc
     )
-    select TRAFFIC_CONTROL_DEVICE, average_injuries as average
+    select traffic_control_device, average_injuries
     from cte
     limit 1;
 
@@ -94,11 +89,10 @@ queries = {
 
     "8. Top 5 Crash Hotspots by Exact Coordinates": """
 
-    select
-    LATITUDE, LONGITUDE, count(*) as crash_frequency
-    from traffic_crashes
-    group by LATITUDE, LONGITUDE
-    order by crash_frequency desc
+    select latitude, longitude, count(*) as total_frequency
+    from traffic_crashes_nfs
+    group by latitude, longitude
+    order by total_crashes desc
     limit 5;
 
     """,
@@ -106,15 +100,10 @@ queries = {
     "9. Top 5 Streets with Highest Injury Rate (>100 crashes)": """
 
     with cte as (
-    select
-    STREET_NAME,
-    count( case when INJURIES_TOTAL > 0 then 1 end ) as injury_crashes,
-    count(*) as total_crashes
-    from traffic_crashes
-    group by STREET_NAME
-    )
-    select 
-    STREET_NAME, injury_crashes, total_crashes, round(injury_crashes * 100 / total_crashes , 2 ) as injury_rate
+    select street_name , count( case when injuries_total > 0 then 1 end ) as injury_crashes, count(*) as total_crashes
+    from traffic_crashes_nfs
+    group by street_name )
+    select street_name,  injury_crashes, total_crashes, round( injury_crashes * 100 / total_crashes, 2 ) as injury_rate
     from cte
     where total_crashes > 100
     order by injury_rate desc
@@ -145,78 +134,66 @@ queries = {
     """,
 
     "11. Day with Highest Average Crashes Per Hour": """
-    with cte as(
-    select 
-    CRASH_DAY_OF_WEEK, CRASH_HOUR,
-    count(*) as total_crashes
-    from traffic_crashes
-    group by CRASH_DAY_OF_WEEK, CRASH_HOUR
+
+    with cte as (
+    select crash_day_of_week, crash_hour, count(*) as crashes_per_hour
+    from traffic_crashes_nfs
+    group by crash_day_of_week, crash_hour
     )
-    select
-    CRASH_DAY_OF_WEEK,
-    round(avg(total_crashes), 2) as average_crashes
+    select crash_day_of_week, round( avg(crashes_per_hour), 2 ) as average_crashes_per_hour
     from cte
-    group by CRASH_DAY_OF_WEEK
-    order by average_crashes desc
+    group by crash_day_of_week
+    order by average_crashes_per_hour desc
     limit 1;
 
     """,
 
     "12. High-Risk Time Slots (Morning/Afternoon/Evening/Night)": """
 
-    select
-    case 
-    when CRASH_HOUR between 6 and 11 then 'Morning'
-    when CRASH_HOUR between 12 and 16 then 'Afternoon'
-    when CRASH_HOUR between 17 and 20 then 'Evening'
-    else 'Night'
+    select 
+    case when crash_hour between 6 and 11 then 'Morning'
+    when crash_hour between 12 and 16 then 'Afternoon'
+    when crash_hour between 17 and 19 then 'Evening'
+    else 'Night' 
     end as time_slot,
-    count(*) as injury_crashes
-    from traffic_crashes
-    where INJURIES_TOTAL > 0
+    count( case when injuries_total > 0 then 1 end ) as injury_crashes
+    from traffic_crashes_nfs
     group by time_slot
-    order by injury_crashes desc;
+    order by injury_crashes desc
+    limit 1;
 
     """,
 
     "13. Top 3 Contributing Causes per Crash Type": """
 
     with cte as (
-    select
-    CRASH_TYPE, PRIM_CONTRIBUTORY_CAUSE, 
-    count(*) as total_crashes,
-    row_number() over (
-    partition by CRASH_TYPE 
-    order by count(*) desc
-    ) as rnk
-    from traffic_crashes
-    group by CRASH_TYPE, PRIM_CONTRIBUTORY_CAUSE
+    select crash_type, prim_contributory_cause, count(*) as total_crashes,
+    row_number() over (partition by crash_type order by count(*) desc ) as rnk
+    from traffic_crashes_nfs
+    group by crash_type, prim_contributory_cause
     )
-    select CRASH_TYPE, PRIM_CONTRIBUTORY_CAUSE, total_crashes
+    select crash_type, prim_contributory_cause as cause, total_crashes
     from cte
     where rnk <=3
-    order by CRASH_TYPE, rnk;
+    order by crash_type, total_crashes desc;
 
     """,
 
     "14. Year-over-Year Crash Growth Rate": """
 
-    with cte1 as (
-    select 
-    year(CRASH_DATE) as crash_year,
-    count(*) as total_crashes
-    from traffic_crashes
-    group by year(CRASH_DATE)
-    ),
+    with cte1 as 
+    (
+    select year(crash_date) as crash_year, count(*) as total_crashes
+    from traffic_crashes_nfs
+    group by year(crash_date)
+    )
+    ,
     cte2 as (
-    select
-    crash_year, total_crashes,
-    lag(total_crashes) over (order by crash_year) as prev_year_crashes
+    select crash_year, total_crashes, lag(total_crashes) over ( order by crash_year) as prev_year_crashes
     from cte1
     )
-    select 
-    crash_year, total_crashes, prev_year_crashes,
-    round( (total_crashes - prev_year_crashes) * 100 / prev_year_crashes, 2  ) as crash_growth_rate
+    select crash_year, total_crashes as curr_year_crashes, prev_year_crashes,
+    round ( (total_crashes - prev_year_crashes) * 100 / prev_year_crashes , 2) as crash_growth
     from cte2
     order by crash_year;
 
@@ -224,12 +201,9 @@ queries = {
 
     "15. Hotspot Zones (Rounded Coordinates)": """
 
-    select
-    round(LATITUDE, 2) as zone_latitude,
-    round(LONGITUDE, 2) as zone_longitude,
-    count(*) as total_crashes
-    from traffic_crashes
-    group by round(LATITUDE , 2) , round(LONGITUDE , 2)
+    select round( latitude, 2 ) as zone_latitude , round (longitude, 2) as zone_longitude , count(*) as total_crashes
+    from traffic_crashes_nfs
+    group by round(latitude, 2), round(longitude, 2)
     order by total_crashes desc
     limit 10;
 
