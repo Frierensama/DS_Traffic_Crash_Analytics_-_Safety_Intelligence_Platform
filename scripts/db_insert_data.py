@@ -1,9 +1,14 @@
 import pandas as pd
 from db_config import get_connection
+from dotenv import load_dotenv
+import os
 
 try:
+    load_dotenv()
+    path = os.getenv('CSV_PATH') # getting my csv file path from .env
+
     # load the csv.
-    df = pd.read_csv("C:/Users/peace/Documents/Github_Repos/DS_Traffic_Crash_Analytics_&_Safety_Intelligence_Platform/data/Traffic_CrashesData.csv")
+    df = pd.read_csv(path)
 
     # removed duplicate/derived cols.
     df.drop(columns=['date','year'], inplace=True)
