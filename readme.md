@@ -94,7 +94,7 @@ python scripts/db_create_table.py
 python scripts/db_insert_data.py
 ```
 
-### 4. Make a script with the quries and insights in scripts directory
+### 4. Make a script with your custom quries and insights in scripts directory (mine has 15 queries, feel free to modify)
 
 ```bash
 scripts/db_queries.py
