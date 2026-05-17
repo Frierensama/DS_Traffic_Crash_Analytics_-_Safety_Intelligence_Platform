@@ -94,10 +94,10 @@ python scripts/db_create_table.py
 python scripts/db_insert_data.py
 ```
 
-### 4. Make a script to import the quries and insights
+### 4. Make a script with the quries and insights in scripts directory
 
 ```bash
-python scripts/db_queries.py
+scripts/db_queries.py
 ```
 
 ### 5. Start the dashboard
