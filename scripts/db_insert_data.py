@@ -25,7 +25,7 @@ try:
     rows = df.values.tolist()
     placeholder = ", ".join( ['%s'] * len(df.columns) )
 
-    insert_query = f"insert into traffic_crashes ({columns}) values ({placeholder})"
+    insert_query = f"insert into traffic_crashes_nfs ({columns}) values ({placeholder})"
 
     cursor.executemany(insert_query, rows)
     conn.commit() # commit changes to database.

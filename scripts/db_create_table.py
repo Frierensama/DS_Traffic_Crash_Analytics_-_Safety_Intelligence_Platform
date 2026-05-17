@@ -73,7 +73,7 @@ try:
     cursor.execute(query=table_create_query)
     conn.commit() # commit changes to database.
 
-    print("Table Created in database=traffic_crash_analysis, table=traffic_crashes")
+    print("Table Created in database=traffic_crash_analysis, table=traffic_crashes_nfs")
 
 except Exception as e:
     # in-case if an error occures while connecting to database.
