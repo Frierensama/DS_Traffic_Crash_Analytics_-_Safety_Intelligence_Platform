@@ -1,5 +1,7 @@
 use traffic_crash_analysis;
 
+with cte as
+(
 select year(crash_date) as crash_year , crash_type, count(*) as total_crashes,
 row_number() over (partition by year(crash_date) order by count(*) desc ) as rnk
 from traffic_crashes_nfs
