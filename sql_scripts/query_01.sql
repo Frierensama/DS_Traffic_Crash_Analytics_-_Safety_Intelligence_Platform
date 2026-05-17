@@ -1,11 +1,8 @@
 use traffic_crash_analysis;
 
-select * from traffic_crashes
-limit 2; -- just to check column names
-
-select 
-WEATHER_CONDITION , CRASH_TYPE , count(*) as total_crashes
-from traffic_crashes
-group by WEATHER_CONDITION , CRASH_TYPE
+select weather_condition, crash_type, count(*) as total_crashes
+from traffic_crashes_nfs
+where weather_condition != 'UNKNOWN'
+group by weather_condition, crash_type
 order by total_crashes desc
 limit 5;

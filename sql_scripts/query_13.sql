@@ -1,22 +1,12 @@
 use traffic_crash_analysis;
 
-select * from traffic_crashes
-limit 2; 
-
-select CRASH_TYPE from traffic_crashes group by CRASH_TYPE;
-
 with cte as (
-select
-CRASH_TYPE, PRIM_CONTRIBUTORY_CAUSE, 
-count(*) as total_crashes,
-row_number() over (
-partition by CRASH_TYPE 
-order by count(*) desc
-) as rnk
-from traffic_crashes
-group by CRASH_TYPE, PRIM_CONTRIBUTORY_CAUSE
+select crash_type, prim_contributory_cause, count(*) as total_crashes,
+row_number() over (partition by crash_type order by count(*) desc ) as rnk
+from traffic_crashes_nfs
+group by crash_type, prim_contributory_cause
 )
-select CRASH_TYPE, PRIM_CONTRIBUTORY_CAUSE, total_crashes
+select crash_type, prim_contributory_cause as cause, total_crashes
 from cte
 where rnk <=3
-order by CRASH_TYPE, rnk;
+order by crash_type, total_crashes desc;

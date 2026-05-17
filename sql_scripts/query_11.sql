@@ -1,19 +1,12 @@
 use traffic_crash_analysis;
 
-select * from traffic_crashes
-limit 10; -- just to check column names
-
-with cte as(
-select 
-CRASH_DAY_OF_WEEK, CRASH_HOUR,
-count(*) as total_crashes
-from traffic_crashes
-group by CRASH_DAY_OF_WEEK, CRASH_HOUR
+with cte as (
+select crash_day_of_week, crash_hour, count(*) as crashes_per_hour
+from traffic_crashes_nfs
+group by crash_day_of_week, crash_hour
 )
-select
-CRASH_DAY_OF_WEEK,
-round(avg(total_crashes), 2) as average_crashes
+select crash_day_of_week, round( avg(crashes_per_hour), 2 ) as average_crashes_per_hour
 from cte
-group by CRASH_DAY_OF_WEEK
-order by average_crashes desc
+group by crash_day_of_week
+order by average_crashes_per_hour desc
 limit 1;

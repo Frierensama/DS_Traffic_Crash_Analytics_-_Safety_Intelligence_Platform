@@ -1,10 +1,14 @@
 use traffic_crash_analysis;
 
-select * from traffic_crashes
-limit 10; -- just to check column names
-
+with cte as(
+select crash_type, 
+count(case when injuries_total > 0 then 1 end ) as injury_crashes, 
+count(*) as total_crashes
+from traffic_crashes_nfs
+group by crash_type
+)
 select
-CRASH_TYPE, round( count(case when INJURIES_TOTAL > 0 then 1 end ) * 100 / count(*), 2 ) as percent_injury_for_type
-from traffic_crashes
-group by CRASH_TYPE
-order by percent_injury_for_type desc;
+crash_type,
+round( injury_crashes * 100 / total_crashes, 2) as injury_crash_percent
+from cte
+order by injury_crash_percent desc;

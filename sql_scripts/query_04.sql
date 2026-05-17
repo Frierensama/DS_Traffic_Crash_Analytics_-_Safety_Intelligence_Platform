@@ -1,27 +1,10 @@
 use traffic_crash_analysis;
 
-select * from traffic_crashes
-limit 10; -- just to check column names
-
--- with crashes_by_hour as (
--- select 
--- CRASH_MONTH, CRASH_HOUR, count(*) as crashes_total
--- from traffic_crashes
--- group by CRASH_MONTH, CRASH_HOUR
--- )
--- select * from crashes_by_hour;
-
-with crashes_by_hour as(
-select CRASH_MONTH, CRASH_HOUR, count(*) as total_crashes
-from traffic_crashes
-group by CRASH_MONTH, CRASH_HOUR
+with cte as (
+select crash_month, crash_hour, count(*) as total_crashes_per_hour, row_number() over (partition by crash_month order by count(*) desc ) as rnk
+from traffic_crashes_nfs
+group by crash_month, crash_hour
+order by crash_month, rnk
 )
-,
-hours_ranked as (
-select CRASH_MONTH, CRASH_HOUR, total_crashes, row_number() over ( partition by CRASH_MONTH order by total_crashes desc ) as rnk
-from crashes_by_hour
-)
-select CRASH_MONTH, CRASH_HOUR as peak_crash_hour, total_crashes
-from hours_ranked
-where rnk = 1
-order by CRASH_MONTH; 
+select crash_month, crash_hour as peak_crash_hour, total_crashes_per_hour as total_crashes from cte
+where rnk = 1;

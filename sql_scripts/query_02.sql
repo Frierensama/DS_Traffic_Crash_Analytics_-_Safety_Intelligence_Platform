@@ -1,12 +1,8 @@
 use traffic_crash_analysis;
 
-select * from traffic_crashes
-limit 10; -- just to check column names
-
-select
-STREET_NAME , count(*) as injury_crash_count
-from traffic_crashes
-where INJURIES_TOTAL > 0
-group by STREET_NAME
-order by injury_crash_count desc
+select street_name, count(*) as injury_crashes
+from traffic_crashes_nfs
+where injuries_total > 0
+group by street_name
+order by injury_crashes desc
 limit 10;
