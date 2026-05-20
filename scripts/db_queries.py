@@ -219,7 +219,7 @@ insights = {
         "Crash activity is not evenly spread throughout the day. This highlights the peak crash hour for each month.",
 
     "5. Top 5 Night-Time Primary Crash Causes":
-        "Most common causes behind crashes during night hours, helps us to premptive measures.",
+        "Most common causes behind crashes during night hours is still unknown.",
 
     "6. Average Injuries: Daylight vs Darkness":
         "We can say that injury during crash is more during night than during daytime.",
